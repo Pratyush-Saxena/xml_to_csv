@@ -61,9 +61,11 @@ def convert_to_csv(xmlfile):
                 data["FinInstrmGnlAttrbts.NtnlCcy"] = rec[5].text
                 data["Issr"] = element[1].text
             writer.writerow(data)
-    print("csv file created", xmlfile.name.split(".")[0] + ".csv")
-    upload_to_s3(xmlfile.name.replace(".xml", ".csv"), open("tmp.csv", "rb"))
-    print("uploaded to s3", xmlfile.name.split(".")[0] + ".csv")
+
+    try:
+        upload_to_s3(xmlfile.name.replace(".xml", ".csv"), open("tmp.csv", "rb"))
+    except Exception as e:
+        print("file upload "+xmlfile.name.replace(".xml", ".csv")+" failed", e)
 
 
 def extract_data():
@@ -84,9 +86,10 @@ def extract_data():
             f.write(resp.content)
         archive = zipfile.ZipFile("tmp.zip", "r")
         xmlfile = archive.open(archive.namelist()[0])
-        print("extracting", xmlfile.name)
-        convert_to_csv(xmlfile)
-        break
+        try:
+            convert_to_csv(xmlfile)
+        except Exception as e:
+            print("file convert "+xmlfile.name+" failed", e)
 
 
 if __name__ == "__main__":
