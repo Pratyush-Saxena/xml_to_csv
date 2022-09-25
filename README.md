@@ -17,4 +17,6 @@ pip3 install -r requirements.txt
 ```
 python3 main.py
 ```
+4. Now head over to http://127.0.0.1:9001/ to view the csv files
 
+(Note: Default username-minio99 and password-minio123)
